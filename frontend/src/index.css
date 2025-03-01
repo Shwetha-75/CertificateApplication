@@ -1,0 +1,28 @@
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgb(0, 0, 0);  
+    -webkit-box-shadow: 0 0 0 40px transparent inset !important;
+
+}
+html::-webkit-scrollbar {
+  width: 6px;
+}
+ 
+html::-webkit-scrollbar-track {
+  background: black;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+html::-webkit-scrollbar-thumb {
+  backdrop-filter: blur(13px);
+  background: rgba(102, 102, 102, 0.571);
+  border:none;
+  border-radius: 100px;
+}
+ 
+.app{
+  background-color: rgb(8, 7, 31);
+  color:white;
+}
