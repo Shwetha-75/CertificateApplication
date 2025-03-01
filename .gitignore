@@ -48,4 +48,14 @@ wp-config.php
 #/wp-content/themes
 
 frontend/node_modules
-backend/.env
+/backend/outputs
+/backend/uploads
+
+/backend/user
+
+/Book1.xlsx
+
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
