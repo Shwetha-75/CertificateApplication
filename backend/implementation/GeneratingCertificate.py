@@ -42,12 +42,15 @@ class GeneratingCertificate:
         draw.text(year_coords,year,fill="white",font=font)        
         draw.text(course_coords,course,fill="white",font=font)    
         user_id=str(uuid4()) 
-        temp=user_id+".png"
+        temp="certify"+firstName+".png"
         file_path=r"C:\Users\SHWETHA\Desktop\Certificate_Generatoe\Certificate-Generator\backend\user"
         save_path=os.path.join(file_path,temp)
         img.save(save_path)
+        files=self.cursor.storage.from_("images").list()
+        file_exists=any(file['name']==file_path for file in files)
+        print(file_exists)
         with open(save_path,"rb") as f:
-             response=self.cursor.storage.from_("images").upload(
+             response=self.cursor.storage.from_("images").update(
                  path=f"public/{temp}",
                  file=f,
                
@@ -64,9 +67,7 @@ class GeneratingCertificate:
              }
              self.result.append(user_model)
         # success full 
-        
-    def insertingActivity(self):
-        for i in self.result:   
-            self.cursor.table('usermodel').insert(i).execute()
-
+    def getUserModels(self):
+        return self.result    
+    
           
