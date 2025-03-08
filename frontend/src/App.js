@@ -15,7 +15,7 @@ function App() {
       {/* <Router>
       <NavigationBar/>
         <Routes>
-          <Route path="/" element={<Registration  />}></Route>
+          <Route path="/" element={<MainComponent  />}></Route>
           <Route path="/review" element={<Review/>}></Route>
           <Route path="/mail" element={<SendMail/>}></Route>
           <Route  path="/profile" element={<Profile/>} ></Route>

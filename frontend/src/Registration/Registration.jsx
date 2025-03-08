@@ -1,17 +1,19 @@
 import React from 'react'
-
+import axios from "axios";
+import RegistrationFail from './RegistrationFail';
+import RegistrationSuccess from './RegistrationSuccess';
 
 function reducer(state={
   userName:'',
   email:"",
-  linkedIn:'',
-  gitHub:"",
+  linkedInProfile:'',
+  gitHubProfile:"",
   password:"",
   confirmPassword:''
 },action){
      switch(action.type){
   
-           case "username":return {
+           case "userName":return {
             ...state,
             userName:action.nextUserName
            }
@@ -21,14 +23,14 @@ function reducer(state={
             email:action.nextEmail
            }
 
-           case "linkedIn":return{
+           case "linkedInProfile":return{
             ...state,
-            linkedIn:action.nextLinkedIn
+            linkedInProfile:action.nextLinkedIn
            }
 
-           case "gitHub":return{
+           case "gitHubProfile":return{
             ...state,
-            gitHub:action.nextGitHub
+            gitHubProfile:action.nextGitHub
            }
            case "password": return {
             ...state,
@@ -43,23 +45,61 @@ function reducer(state={
           }
 }
 export default function Registration() {
+  const [status,setStatus]=React.useState(false);
+  const [password,setPassword]=React.useState([false,'']);
 
   const [state,dispatch]=React.useReducer(reducer,{
     userName:'',
     email:"",
-    linkedIn:'',
-    gitHub:"",
+    linkedInProfile:'',
+    gitHubProfile:"",
     password:"",
     confirmPassword:''
   })
 
 
-  const handleOnSubmit=(e)=>{
-    console.log(state)
+  const handleOnSubmit=async(e)=>{
+   
     e.preventDefault();
+    if(!passwordValidation(state.password)[0]){
+
+            setPassword([true,'password criteria is not matching'])
+           return;
+
+    }
+    if(!passwordConfirmPassword(state.password,state.confirmPassword)){
+         setPassword([true,'both confirm password and password are not matching'])
+         return; 
+    }
+    setPassword([false,''])
+    const form=new FormData();
+    form.append("userName",state.userName);
+    form.append("email",state.email);
+    form.append("linkedInProfile",state.linkedInProfile);
+    form.append("gitHubProfile",state.gitHubProfile);
+    form.append("password",state.password);
+    form.append("confirmPassword",state.confirmPassword);
+
+     try{
+     const response=await axios.post("http://127.0.0.1:5000/register",form,{
+            headers:{
+              "Content-type":'multipart/form-data'
+            }
+     });
+    
+      
+
+      setStatus(response.data);
+
+           
+     }
+     catch(error){
+           console.log(error);
+     }
+
   }
     
-
+   console.log(status)
 
   return (
     <div>
@@ -70,12 +110,13 @@ export default function Registration() {
          {/* user name */}
         <input
         type="text"
-        name="username"
+        name="userName"
         value={state.userName||""}
         onChange={(e)=>dispatch({
-          type:"username",
+          type:"userName",
           nextUserName:e.target.value
         })}
+          required
         />
         <br></br>
         {/* email */}
@@ -90,6 +131,7 @@ export default function Registration() {
           type:'email',
           nextEmail:e.target.value
         })}
+         required
         />
         <br></br>
 
@@ -99,12 +141,13 @@ export default function Registration() {
         {/* linkedin profile url */}
         <input
         type="url"
-        name='linkedIn'
-        value={state.linkedIn||""}
+        name='linkedInProfile'
+        value={state.linkedInProfile||""}
         onChange={(e)=>dispatch({
-          type:'linkedIn',
+          type:'linkedInProfile',
           nextLinkedIn:e.target.value
         })}
+        required
         />
         <br></br>
 
@@ -112,13 +155,14 @@ export default function Registration() {
         <label>Git hub Profile</label>
         <input
         type="url"
-        name="gitHub"
+        name="gitHubProfile"
 
-        value={state.gitHub||""}
+        value={state.gitHubProfile||""}
         onChange={(e)=>dispatch({
-          type:'gitHub',
+          type:'gitHubProfile',
           nextGitHub:e.target.value
         })}
+        required
         />
         <br></br>
 
@@ -132,10 +176,12 @@ export default function Registration() {
           type:'password',
           nextPassword:e.target.value
         })}
+         required
         />
         <br></br>
 
         {/* confirm password  */}
+
         <label>
           Confirm Password 
         </label>
@@ -147,9 +193,36 @@ export default function Registration() {
           type:'confirmPassword',
           nextConfirmPassword:e.target.value
         })}
+         required         
         />
      <input type="submit" value="Submit"/>
+
+
       </form>
+
+      {status==="ok" &&<RegistrationSuccess/>}
+      {status==="no" &&<RegistrationFail/>}
+
+      {password[0]&& <p>{password[1]}</p>}
     </div>
   )
+};
+
+function passwordValidation(password){
+  if(password.length<8 )return [false,"password is weak"];
+  if(password.length>25)return [false,"password length is exceeding!"];
+  
+  // check the criteria
+  let result_1=password.match('[a-z]');
+  let result_2=password.match('[A-Z]');
+  let result_3=password.match(/\d/g);
+  let result_4=password.match(/[~!@#$%^&*]/g);
+  return [result_1!==null && result_2!==null && result_3!==null && result_4!==null,"please check the password criteria !"];
+
+
+}
+
+function passwordConfirmPassword(password,confirmPassword){
+    return password===confirmPassword;
+
 }

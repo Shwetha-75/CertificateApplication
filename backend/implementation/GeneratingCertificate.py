@@ -3,6 +3,7 @@ import nanoid
 import os
 from datetime import datetime
 from uuid import uuid4
+from models.UserModel import UserModel
 class GeneratingCertificate:
     
     def __init__(self,path,cursor):
@@ -47,25 +48,15 @@ class GeneratingCertificate:
         save_path=os.path.join(file_path,temp)
         img.save(save_path)
         files=self.cursor.storage.from_("images").list()
-        file_exists=any(file['name']==file_path for file in files)
-        print(file_exists)
+        # file_exists=any(file['name']==file_path for file in files)
+       
         with open(save_path,"rb") as f:
              response=self.cursor.storage.from_("images").update(
                  path=f"public/{temp}",
-                 file=f,
-               
-                 )
-             user_model={
-                 "email":email,
-                 "lastName":lastName,
-                 "firstName":firstName,
-                 "file_url":response.path,
-                 "course":course,
-                 "uploaded_file":str(datetime.now()),
-                 "user_id":user_id,
-                 "year":year
-             }
-             self.result.append(user_model)
+                 file=f,)      
+             user=UserModel(year,course,email,response.path,user_id,firstName,lastName,str(datetime.now()))
+             self.result.append(user.__str__())
+             
         # success full 
     def getUserModels(self):
         return self.result    

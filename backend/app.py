@@ -6,7 +6,7 @@ from flask_cors import CORS
 from models.AdminStorage import AdminStorage                    
 import pandas as pd
 from config import Admin
-
+from implementation.AdminValidation import AdminValidation
 
 
 app = Flask(__name__)
@@ -21,6 +21,22 @@ configuration=Admin()
 cursor=configuration.accessToken()
 CORS(app)
 app.secret_key="secret_key_app"
+
+adminValidationObject=AdminValidation(cursor)
+
+
+
+@app.route("/register",methods=['GET','POST'])
+def registerAdmin():
+    if request.method=='POST':
+        data=dict(request.form)
+        if adminValidationObject.adminValidation(data['email'],data):
+            return "ok"
+        else:
+            return "no"
+        
+    return "no"
+    
 
 @app.route("/data", methods=["GET", "POST"])
 def index():

@@ -43,7 +43,7 @@ export default function Main() {
     try{
      console.log("im sending request")
      const response=await axios.post("http://127.0.0.1:5000/data",form,{
-       headers:{
+      headers:{
          'Content-Type':'multipart/form-data'
        }
      });
