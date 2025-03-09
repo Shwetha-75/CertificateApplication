@@ -1,8 +1,9 @@
 import React from 'react'
 import axios from "axios";
+import { useNavigate, useLocation} from 'react-router-dom';
 import RegistrationFail from './RegistrationFail';
 import RegistrationSuccess from './RegistrationSuccess';
-
+import { LoginAdminStatus } from '../App';
 function reducer(state={
   userName:'',
   email:"",
@@ -45,8 +46,12 @@ function reducer(state={
           }
 }
 export default function Registration() {
-  const [status,setStatus]=React.useState(false);
+ 
   const [password,setPassword]=React.useState([false,'']);
+ const {userStatus,setUserStatus}=React.useContext(LoginAdminStatus);
+  const navigate=useNavigate();
+  const location=useLocation();
+
 
   const [state,dispatch]=React.useReducer(reducer,{
     userName:'',
@@ -86,20 +91,40 @@ export default function Registration() {
               "Content-type":'multipart/form-data'
             }
      });
-    
-      
-
-      setStatus(response.data);
-
-           
+     setUserStatus(response.data);       
      }
      catch(error){
            console.log(error);
      }
-
   }
-    
-   console.log(status)
+  
+  React.useEffect(()=>{
+    localStorage.setItem('userStatus',JSON.stringify(userStatus));
+
+  })
+
+
+React.useEffect(()=>{
+  if(userStatus==='no'|| userStatus===false){
+        navigate("/")
+  }
+  else{
+      navigate("/profile")
+  }
+},[userStatus,navigate]);
+
+React.useEffect(()=>{
+      const handleBrowserBackButton=()=>{
+          if(location.pathname==='/'){
+              navigate(1);
+          }
+      }
+
+      window.addEventListener("popstate",handleBrowserBackButton);
+      return ()=>window.removeEventListener("popstate",handleBrowserBackButton)
+},[userStatus,navigate,location ])
+
+
 
   return (
     <div>
@@ -200,8 +225,8 @@ export default function Registration() {
 
       </form>
 
-      {status==="ok" &&<RegistrationSuccess/>}
-      {status==="no" &&<RegistrationFail/>}
+      {userStatus==="ok" &&<RegistrationSuccess/>}
+      {userStatus==="no" &&<RegistrationFail/>}
 
       {password[0]&& <p>{password[1]}</p>}
     </div>
