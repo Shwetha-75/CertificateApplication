@@ -7,6 +7,7 @@ from models.AdminStorage import AdminStorage
 import pandas as pd
 from config import Admin
 from implementation.AdminValidation import AdminValidation
+from implementation.LoginAdminModel import LoginAdminModel
 
 
 app = Flask(__name__)
@@ -23,7 +24,7 @@ CORS(app)
 app.secret_key="secret_key_app"
 
 adminValidationObject=AdminValidation(cursor)
-
+loginAdminModel=LoginAdminModel(cursor)
 
 
 @app.route("/register",methods=['GET','POST'])
@@ -37,6 +38,14 @@ def registerAdmin():
         
     return "no"
     
+@app.route('/login',methods=['POST','GET'])
+def loginAdmin():
+    global result
+    if request.method=='POST':
+       data=dict(request.form) 
+       result=loginAdminModel.validatingLogin(data['email'],data['password'])
+      
+    return result 
 
 @app.route("/data", methods=["GET", "POST"])
 def index():
