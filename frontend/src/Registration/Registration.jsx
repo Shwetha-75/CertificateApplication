@@ -48,9 +48,12 @@ function reducer(state={
 export default function Registration() {
  
   const [password,setPassword]=React.useState([false,'']);
- const {userStatus,setUserStatus}=React.useContext(LoginAdminStatus);
+  const {userStatus,setUserStatus}=React.useContext(LoginAdminStatus);
   const navigate=useNavigate();
   const location=useLocation();
+  const [userNameStatus,setUserNameStatus]=React.useState('');
+  const [formSubmissioon,setFormSubmission]=React.useState("");
+
 
 
   const [state,dispatch]=React.useReducer(reducer,{
@@ -76,6 +79,10 @@ export default function Registration() {
          setPassword([true,'both confirm password and password are not matching'])
          return; 
     }
+    if(userNameStatus==='no'){
+      setFormSubmission(true)
+      return ;
+    }
     setPassword([false,''])
     const form=new FormData();
     form.append("userName",state.userName);
@@ -91,7 +98,8 @@ export default function Registration() {
               "Content-type":'multipart/form-data'
             }
      });
-     setUserStatus(response.data);       
+     setUserStatus(response.data);     
+     setFormSubmission(false);  
      }
      catch(error){
            console.log(error);
@@ -101,7 +109,40 @@ export default function Registration() {
   React.useEffect(()=>{
     localStorage.setItem('userStatus',JSON.stringify(userStatus));
 
-  })
+  });
+
+  React.useEffect(()=>{
+
+
+    async function userNameValidation(){
+     
+      if(state.userName.length>5){
+        let formData=new FormData();
+        formData.append('username',state.userName)
+        console.log(formData)
+        try{
+          const response=await axios.post("http://127.0.0.1:5000/username",formData,{
+                headers:{
+                    "Content-type":'multipart/form-data'
+                  }
+                }
+                
+                
+              )  
+        
+               setUserNameStatus(response.data)
+              
+            }catch(error){
+              console.log(error)
+            }
+          }
+        }
+   
+
+        userNameValidation();
+     
+  },[state]);
+
 
 
 React.useEffect(()=>{
@@ -144,6 +185,13 @@ React.useEffect(()=>{
           required
         />
         <br></br>
+  {userNameStatus==='no' && <p className="text-danger">user name is not available</p>}
+        
+        {userNameStatus==='ok' && <p className="text-success">User name is available</p>}
+        <br>
+
+
+        </br>
         {/* email */}
         <label>
           Email
@@ -220,6 +268,7 @@ React.useEffect(()=>{
         })}
          required         
         />
+    {formSubmissioon&& <p>User name Already taken </p>}
      <input type="submit" value="Submit"/>
 
 

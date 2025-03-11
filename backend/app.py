@@ -8,7 +8,7 @@ import pandas as pd
 from config import Admin
 from implementation.AdminValidation import AdminValidation
 from implementation.LoginAdminModel import LoginAdminModel
-
+from implementation.AdminUserNameValidation import AdminUserNameValidation
 
 app = Flask(__name__)
 # Configure upload folder
@@ -25,6 +25,7 @@ app.secret_key="secret_key_app"
 
 adminValidationObject=AdminValidation(cursor)
 loginAdminModel=LoginAdminModel(cursor)
+adminUserName=AdminUserNameValidation(cursor) 
 
 
 @app.route("/register",methods=['GET','POST'])
@@ -37,7 +38,19 @@ def registerAdmin():
             return "no"
         
     return "no"
-    
+
+@app.route("/username",methods=['POST','GET'])
+def validatingUserName():
+    global response 
+    if request.method=='POST':
+        data=dict(request.form)
+        print(data)
+      
+        response=adminUserName.validatingUserName(data['username'])
+        if response: 
+            return "ok"
+    return "no"
+        
 @app.route('/login',methods=['POST','GET'])
 def loginAdmin():
     global result
