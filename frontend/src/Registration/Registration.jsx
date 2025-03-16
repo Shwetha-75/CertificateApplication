@@ -91,7 +91,7 @@ export default function Registration() {
     form.append("gitHubProfile",state.gitHubProfile);
     form.append("password",state.password);
     form.append("confirmPassword",state.confirmPassword);
-
+    console.log(form)
      try{
      const response=await axios.post("http://127.0.0.1:5000/register",form,{
             headers:{
@@ -117,11 +117,12 @@ export default function Registration() {
     async function userNameValidation(){
      
       if(state.userName.length>5){
-        let formData=new FormData();
-        formData.append('username',state.userName)
-        console.log(formData)
+        const formData=new FormData();
+       
+        formData.append('userName',state.userName)
+        console.log(formData.get('userName'))
         try{
-          const response=await axios.post("http://127.0.0.1:5000/username",formData,{
+          const response=await axios.post("http://127.0.0.1:8081/username",formData,{
                 headers:{
                     "Content-type":'multipart/form-data'
                   }
@@ -129,7 +130,7 @@ export default function Registration() {
                 
                 
               )  
-        
+               console.log(response.data)
                setUserNameStatus(response.data)
               
             }catch(error){

@@ -36,7 +36,7 @@ export default function LoginForm() {
     form.append('email',state.email)
     form.append('password',state.password)
          try{
-         const response=await axios.post("http://127.0.0.1:5000/login",form,{
+         const response=await axios.post("http://127.0.0.1:7676/login",form,{
               headers:{
                    'Content-type':'multipart/form-data'
               }

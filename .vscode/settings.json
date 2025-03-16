@@ -1,0 +1,6 @@
+{
+    "cSpell.ignoreRegExpList": [
+        "\"python.analysis.extraPaths\": [     \"/path/to/site-packages\" ]"
+    ],
+    "liveServer.settings.port": 5501
+}

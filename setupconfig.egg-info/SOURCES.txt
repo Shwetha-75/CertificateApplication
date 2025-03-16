@@ -1,0 +1,11 @@
+LICENSE
+README.md
+setup.py
+dbConfiguration/__init__.py
+dbConfiguration/config.py
+setupconfig.egg-info/PKG-INFO
+setupconfig.egg-info/SOURCES.txt
+setupconfig.egg-info/dependency_links.txt
+setupconfig.egg-info/top_level.txt
+username/__init__.py
+username/app..py

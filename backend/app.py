@@ -10,6 +10,7 @@ from implementation.AdminValidation import AdminValidation
 from implementation.LoginAdminModel import LoginAdminModel
 from implementation.AdminUserNameValidation import AdminUserNameValidation
 
+
 app = Flask(__name__)
 # Configure upload folder
 UPLOAD_FOLDER = r"C:\Users\SHWETHA\Desktop\Certificate_Generatoe\Certificate-Generator\uploads"
@@ -36,7 +37,6 @@ def registerAdmin():
             return "ok"
         else:
             return "no"
-        
     return "no"
 
 @app.route("/username",methods=['POST','GET'])
